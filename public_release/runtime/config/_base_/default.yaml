@@ -1,0 +1,36 @@
+project_name: dc_vic
+
+ckpt_root: ./checkpoint
+debug_dir: ./debug_log
+wandb_root: ./
+
+start_iter: 0
+total_iter: 500000
+
+eval_step: 10000
+
+log_step: 100
+time_step: 1000
+wandb_loss_step: 10000
+
+save_step: 5000
+keep_step: [
+  480000,
+  490000,
+  500000,
+]
+keep_training_state: False
+keep_discriminator: False
+
+optim:
+  clip_max_norm: null # 1.0 in CompressAI
+  g_optimizer:
+    type: Adam
+    lr: 0.0001
+  g_scheduler:
+    type: MultiStepLR
+    milestones: [400000]
+    gamma: 0.1
+  aux_optimizer:
+    type: Adam
+    lr: 0.001

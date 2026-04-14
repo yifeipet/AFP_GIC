@@ -1,0 +1,96 @@
+_base_: [
+  './_base_/default.yaml',
+  './_base_/dataset/train_openimage_eval_kodak.yaml',
+  './_base_/model/hyperprior_charm_dual_cond_vic_model_vq_f8_n256.yaml',
+]
+
+load_checkpoint:
+  exp: exp1_stage1_2
+  iter: 500000
+  load_discriminator: False
+  load_scheduler: False
+  load_optimizer: False
+  strict: False
+
+trainer:
+  type: DualBetaCondGanDistortionVqCodeTrainer
+  beta_policy: exp
+  sample_beta_batch: True
+
+subnet:
+  encoder:
+    max_beta_1: 3.0 # rate
+    max_beta_2: 3.5 # vq
+  decoder:
+    max_beta_1: 3.0 # rate
+    max_beta_2: 3.5 # vq
+
+discriminator:
+  type: DualBetaCondTamingNLayerDiscriminator
+  input_nc: 11 # 3 + cond_ch
+  n_layers: 3
+  ndf: 64
+  use_actnorm: False
+  weight_init: True
+  L: 10
+  cond_ch: 8
+  use_pi: False
+  include_x: True
+  max_beta_1: 3.0 # rate
+  max_beta_2: 3.5 # vq
+  norm_type: none # <<======
+
+optim:
+  clip_max_norm: 1.0
+  g_optimizer:
+    type: Adam
+    lr: 0.0001
+  g_scheduler:
+    type: MultiStepLR
+    milestones: [400000]
+    gamma: 0.1
+  d_optimizer:
+    type: Adam
+    lr: 0.0001
+  d_scheduler:
+    type: MultiStepLR
+    milestones: [400000]
+    gamma: 0.1
+
+# Loss functions
+loss:
+  distortion_loss:
+    type: MSELoss
+    loss_weight: 50
+    normalize_img: True
+    mse_scale: '0_1'
+  perceptual_loss:
+    type: LPIPSLoss
+    net: alex
+    loss_weight: 1.0
+  gan_loss:
+    type: VanillaGANLoss
+    loss_weight: 0.01
+  code_distortion_loss:
+    type: VanillaMSELoss
+    loss_weight: 1.0
+  code_ce_loss:
+    type: CrossEntropyLoss
+    loss_weight: 0.5
+  # Optional auxiliary supervision for token estimator
+  enable_group_ce: false
+  group_map_path: null
+  group_k: 4
+  lambda_group_ce: 0.05
+
+
+keep_step: [
+  400000,
+  500000,
+]
+
+keep_training_state: True
+keep_discriminator: True
+
+start_iter: 0
+total_iter: 500000

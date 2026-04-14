@@ -1,0 +1,14 @@
+dataset:
+  batch_size: 6
+  train_dataset:
+    name: openimage
+    type: ImageDataset
+    image_size: 256
+    resize_range: null
+    root_dir: datasets/openimage # <<== change this
+    subset_list: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+    # subset_list: [0, 1]
+  eval_dataset:
+    name: Kodak
+    type: ImageDataset
+    root_dir: datasets/kodak # <<== change this

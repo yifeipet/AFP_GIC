@@ -1,0 +1,32 @@
+_base_: ./exp1_stage3_adacode_v2_long_from_no_prior_cosine.yaml
+
+comment: public AFP-GIC release configuration
+
+subnet:
+  adacode_prior:
+    ckpt_path: ""
+    codebook_params:
+      - [32, 512, 256]
+      - [32, 256, 256]
+      - [32, 512, 256]
+      - [32, 256, 256]
+      - [32, 256, 256]
+
+eval_step: 5000
+
+model:
+  use_selected_beta_pairs: true
+  selected_beta_rate: [
+    1.921, # 0.050 bpp
+    1.312, # 0.075 bpp
+    0.844, # 0.100 bpp
+    0.422, # 0.125 bpp
+    0.091, # 0.150 bpp
+  ]
+  selected_beta_vq: [
+    2.25, # 0.050 bpp
+    3.5,  # 0.075 bpp
+    3.25, # 0.100 bpp
+    0.5,  # 0.125 bpp
+    2.25, # 0.150 bpp
+  ]

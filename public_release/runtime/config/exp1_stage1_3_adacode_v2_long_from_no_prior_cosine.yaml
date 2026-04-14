@@ -1,0 +1,78 @@
+_base_: [
+  './exp1_stage1_3.yaml'
+]
+
+load_checkpoint:
+  exp: exp1_stage1_2_adacode_v2_long_from_no_prior_cosine
+  iter: 500000
+  load_discriminator: false
+  load_scheduler: false
+  load_optimizer: false
+  strict: false
+
+trainer:
+  type: DualBetaCondGanDistortionVqCodeTrainer
+  beta_policy: exp
+  sample_beta_batch: true
+
+model:
+  type: HyperpriorCharmDualCondVicModel
+  enc_vq_input: onehot_indices
+  prior_type: adacode
+  use_oracle_prior: false
+
+subnet:
+  adacode_prior:
+    ckpt_path: /mnt/e/DC_VIC/dc_vic_adacode_merge/external_libs/adacode/weights_release_v0/AdaCode_S2_model_g.pth
+    gt_resolution: 256
+    weight_softmax: false
+    freeze_pretrained: true
+    strict_load: false
+    cond_ch: 192
+    cond_keys: [block_1_8, block_1_4, block_1_2]
+    fuse_type: sft
+  adacode_prior_estimator:
+    type: AdaCodePriorEstimator
+    in_ch: 192
+    hidden_ch: 384
+    out_ch: 256
+    num_res_blocks: 8
+    act_type: silu
+    norm_type: gn
+    use_output_skip: true
+
+optim:
+  clip_max_norm: 1.0
+  g_optimizer:
+    type: Adam
+    lr: 0.0001
+  g_scheduler:
+    type: MultiStepLR
+    milestones: [400000]
+    gamma: 0.1
+  d_optimizer:
+    type: Adam
+    lr: 0.0001
+  d_scheduler:
+    type: MultiStepLR
+    milestones: [400000]
+    gamma: 0.1
+
+loss:
+  prior_mse_loss:
+    type: VanillaMSELoss
+    loss_weight: 1.0
+  prior_cosine_loss:
+    enabled: false
+    loss_weight: 0.1
+
+keep_step: [
+  400000,
+  500000,
+]
+
+keep_training_state: true
+keep_discriminator: true
+
+start_iter: 0
+total_iter: 500000

@@ -1,0 +1,14 @@
+# Runtime outputs
+results/
+
+# Local Python artifacts
+__pycache__/
+*.pyc
+*.pyo
+
+# Large assets downloaded by the user
+checkpoint/afp_gic_release/model/*
+!checkpoint/afp_gic_release/model/.gitkeep
+
+datasets/kodak/*
+!datasets/kodak/.gitkeep
