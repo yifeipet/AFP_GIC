@@ -1,31 +1,44 @@
-<h1 align="center">AFP-GIC</h1>
-<h3 align="center">Adaptive Fused Prior Transfer for Controllable Generative Image Compression</h3>
+<h1 align="center">Adaptive Fused Prior Transfer for Controllable Generative Image Compression</h1>
 
 <p align="center">
-  Yifei Pei, Ying Liu, and Nam Ling<br>
-  Santa Clara University<br>
-  <strong>IEEE Access, 2026</strong>
+  <a href="https://ieeexplore.ieee.org/document/11712133"><img src="https://img.shields.io/badge/IEEE_Access-Paper-00629B?style=flat-square" alt="IEEE Access paper"></a>
+  <a href="https://arxiv.org/abs/2605.16817"><img src="https://img.shields.io/badge/arXiv-2605.16817-B31B1B?style=flat-square" alt="arXiv and supplementary material"></a>
+  <a href="https://huggingface.co/spaces/yifeipet/AFP-GIC"><img src="https://img.shields.io/badge/Hugging_Face-Live_Demo-FFD21E?style=flat-square" alt="Hugging Face live demo"></a>
+  <a href="https://drive.google.com/drive/folders/1qqPyKHtdiIVoiYWl3mZNGnJFXGzhRHTR?usp=drive_link"><img src="https://img.shields.io/badge/Download-Checkpoint-238636?style=flat-square" alt="Download pretrained checkpoint"></a>
 </p>
 
-<p align="center">
-  <a href="https://ieeexplore.ieee.org/document/11712133">Paper</a> &nbsp;|&nbsp;
-  <a href="https://arxiv.org/abs/2605.16817">arXiv + Supplementary Material</a> &nbsp;|&nbsp;
-  <a href="https://drive.google.com/drive/folders/1qqPyKHtdiIVoiYWl3mZNGnJFXGzhRHTR?usp=drive_link">Pretrained Model</a>
-</p>
+**AFP-GIC** is designed to make generative image compression **content-adaptive** and **reduce hallucinations: invented details that do not match the original image**. It adapts the visual knowledge transferred from a pretrained model to each image, guiding compression and reconstruction toward **more realistic textures and better preservation of the original content**, even at very low bitrates.
+
+Published in ***IEEE Access* (2026)**, AFP-GIC combines this content-adaptive design with **five bitrate operating points in a single deployable checkpoint**, without transmitting the fused prior or reloading model weights between operating points. System-level benchmarks on an NVIDIA RTX 4090 demonstrate **18.1% lower decoder latency** and **31.1M fewer inference parameters** than DC-VIC. Explore the released code and checkpoint, or upload your own images to experience compression and reconstruction in the live demo below.
 
 ## [🤗 Live Interactive Demo on Hugging Face](https://huggingface.co/spaces/yifeipet/AFP-GIC)
 
 [![AFP-GIC interactive demo: original and reconstructed image comparison, bitrate controls, and downloadable results.](figs/Hugging_Face_Screen.png)](https://huggingface.co/spaces/yifeipet/AFP-GIC)
 
-<p>Upload your own image. Choose an operating point. Compress, reconstruct, and compare. <strong>The demo runs on CPU by default.</strong></p>
+<p>Try it with your own images: choose an operating point, compress, and compare the reconstruction side by side. Download the actual compressed bitstream and decode it in the demo. <strong>The demo runs on CPU by default.</strong></p>
 
 <p align="center"><a href="https://huggingface.co/spaces/yifeipet/AFP-GIC"><strong>Try the live demo →</strong></a></p>
 
-**One trained model, five bitrate operating points.** AFP-GIC transfers an image-adaptive fused prior from a frozen AdaCode model for very-low-bitrate generative image compression. Encoder-side prior guidance and decoder-side prior prediction support reconstruction without transmitting the fused prior itself.
+## ✨ Highlights
 
-This is the official **evaluation-only release**, providing the inference code and a pretrained checkpoint. Training code and datasets are not included.
+- **Multi-rate compression without a collection of models:** one checkpoint covers all five reported operating points, simplifying model management.
+- **Adaptive prior guidance without prior transmission:** transfer image-adaptive knowledge from frozen AdaCode to guide encoding and predict the fused prior at the decoder.
+- **18.1% lower decoder latency:** 80.47 ms versus 98.27 ms for DC-VIC.
+- **20.5% fewer inference parameters:** 120.6M versus 151.7M, a reduction of **31.1M parameters**.
+- **From paper to hands-on evaluation:** custom image uploads, downloadable bitstreams, standalone decompression, and per-image benchmark CSVs make the results accessible beyond the paper.
 
-## Overview
+## ⚡ Efficiency
+
+| Method | Inference parameters | Encoder latency | Decoder latency |
+| :--- | ---: | ---: | ---: |
+| DC-VIC | 151.7M | 61.61 ms | 98.27 ms |
+| **AFP-GIC** | **120.6M** | 81.34 ms | **80.47 ms** |
+
+Benchmark: NVIDIA RTX 4090, 100 DIV2K patches of 256 x 256 pixels (paper, Table 5). Parameter counts include frozen components. These system-level measurements are separate from the CPU-hosted demo's response time.
+
+## 🧩 Architecture
+
+Continuing our research on learned image compression, AFP-GIC combines adaptive fused-prior transfer and single-model bitrate control in an asymmetric architecture. A frozen AdaCode model supplies image-adaptive guidance to the encoder; the decoder predicts the fused prior from the compressed representation instead of receiving it as side information.
 
 <p align="center">
   <img src="figs/overview.png" width="900" alt="AFP-GIC architecture: adaptive fused-prior guidance at the encoder and prior prediction at the decoder.">
@@ -33,20 +46,7 @@ This is the official **evaluation-only release**, providing the inference code a
 
 **Figure 1.** Overview of AFP-GIC. Blue and red indicate encoding and decoding, respectively; snowflakes and flames denote frozen and trainable modules.
 
-## Highlights
-
-- **Single-model bitrate control:** select from five reported operating points without loading a different model for each rate.
-- **Adaptive fused-prior transfer:** combine encoder-side prior guidance with decoder-side prediction, without transmitting the fused prior.
-- **Decoder efficiency:** 18.1% lower decoder latency and 20.5% fewer inference parameters than DC-VIC under the paper's unified benchmark.
-
-| Method | Inference parameters | Encoder latency | Decoder latency |
-| :--- | ---: | ---: | ---: |
-| DC-VIC | 151.7M | 61.61 ms | 98.27 ms |
-| **AFP-GIC** | **120.6M** | 81.34 ms | **80.47 ms** |
-
-Table 5 of the paper: RTX 4090, 100 DIV2K patches of 256 x 256 pixels. AFP-GIC saves 31.1M inference parameters; its encoder is slower in this benchmark. Parameter counts include the frozen prior component. These are system-level comparisons using the evaluated models, not architecture-only comparisons.
-
-## Visual Comparisons
+## 🖼️ Visual Comparisons
 
 <p align="center">
   <img src="figs/kodak_comparison.png" width="850" alt="Original images and low-bitrate reconstructions from VVC Intra, MS-ILLM, CRDR, DC-VIC, and AFP-GIC on Kodak, including enlarged details.">
@@ -54,11 +54,19 @@ Table 5 of the paper: RTX 4090, 100 DIV2K patches of 256 x 256 pixels. AFP-GIC s
 
 **Figure 5.** Low-bitrate visual comparisons on Kodak. Baselines are shown at their closest available released bitrates; each image is labeled with its actual bpp. Images and annotations are reproduced from the paper.
 
-## Paper Metrics
+<a name="paper-metrics"></a>
+
+## 📊 Paper Metrics
 
 The [metrics directory](metrics/) provides CSV results for all five AFP-GIC operating points on Kodak, CLIC2020, and DIV2K: [dataset summaries](metrics/afp_gic_operating_points.csv), [paper-rounded values](metrics/afp_gic_paper_values.csv), and 2,760 per-image records including PSNR, SSIM, MS-SSIM, SNR, LPIPS, DISTS, and NIQE. See the [data description](metrics/README.md) for the evaluation records and aggregation checks. FID is provided as a dataset-level metric.
 
-## Installation
+## 📥 Reconstructed Images and Metrics
+
+To make research comparisons easier, we provide **all 2,760 reconstructed images, per-image metrics, and dataset-average metrics** in our [GitHub Releases](https://github.com/yifeipet/AFP_GIC/releases), covering 24 Kodak, 428 CLIC2020, and 100 DIV2K images at five bitrate operating points. Download the datasets and operating points you need to include AFP-GIC as a baseline under matched evaluation protocols, **without rerunning the pretrained model**.
+
+## 🛠️ Installation
+
+This release supports pretrained inference and evaluation. Training code and datasets are not bundled.
 
 The release was tested with **Python 3.9**, **PyTorch 2.1.0**, and **torchvision 0.16.0**. Create a separate environment and install the pinned dependencies:
 
@@ -72,7 +80,7 @@ python -m pip install -r public_release/requirements.txt
 
 For GPU evaluation, use a PyTorch build compatible with your GPU and driver. Follow the [official PyTorch installation instructions](https://pytorch.org/get-started/previous-versions/) for the pinned version if a platform-specific build is needed. Do not replace the pinned versions with the latest releases when reproducing the paper.
 
-## Pretrained Model
+## 📦 Pretrained Model
 
 Download the released checkpoint from [Google Drive](https://drive.google.com/drive/folders/1qqPyKHtdiIVoiYWl3mZNGnJFXGzhRHTR?usp=drive_link) and place it at:
 
@@ -82,9 +90,9 @@ checkpoint/afp_gic_release/model/afp_gic_release.pth.tar
 
 The checkpoint already includes the frozen prior component; no separate AdaCode weight download is required.
 
-## Evaluation
+## 🧪 Evaluation
 
-### Kodak
+### 📷 Kodak
 
 Obtain the [Kodak dataset](https://r0k.us/graphics/kodak/) and place its 24 original PNG images directly in `datasets/kodak/`.
 
@@ -106,7 +114,7 @@ python public_release/test.py -d cuda:0 --dataset kodak --qualities 0 1 2 3 4
 
 Actual bitrates vary with image content. All five indices use the same checkpoint.
 
-### Other Datasets
+### 🗂️ Other Datasets
 
 The entry point also accepts `clic2020_test` and `div2k_valid_hr`. Place the original PNG images in the corresponding directories:
 
@@ -124,7 +132,7 @@ python public_release/test.py -d cuda:0 --dataset clic2020_test --qualities 0 1 
 python public_release/test.py -d cuda:0 --dataset div2k_valid_hr --qualities 0 1 2 3 4
 ```
 
-### Outputs
+### 📁 Outputs
 
 The runner saves reconstructed images, actual bitrates, per-image metrics, and summary files. To choose an output directory:
 
@@ -146,11 +154,11 @@ results/kodak_demo/
     `-- summary.json
 ```
 
-`per_image_metrics.csv` records in-loop PSNR, MS-SSIM, and LPIPS. The separate `_metrics.json` records the post-processing metric pass on saved reconstructions; do not assume the two evaluation paths are numerically interchangeable. See the paper and Supplementary Material for the reported metric protocols. This release is an evaluation entry point, not a one-command reproduction of every experiment in the paper.
+**Metric protocols:** `per_image_metrics.csv` records in-loop PSNR, MS-SSIM, and LPIPS; `_metrics.json` records metrics computed on saved reconstructions. These evaluation paths can produce different values. See the paper and Supplementary Material for the reporting protocols, and [Paper Metrics](#paper-metrics) for the released benchmark CSVs.
 
 Run `python public_release/test.py --help` for the available options. Metric libraries may download their pretrained weights on first use.
 
-## Citation
+## 📝 Citation
 
 If you find our work useful in your research, please cite our official [IEEE Access paper](https://ieeexplore.ieee.org/document/11712133):
 
@@ -165,7 +173,7 @@ If you find our work useful in your research, please cite our official [IEEE Acc
 }
 ```
 
-## Acknowledgments and License
+## 🤝 Acknowledgments and License
 
 AFP-GIC builds on [DC-VIC](https://github.com/iwa-shi/DC_VIC) and [AdaCode](https://github.com/KAIST-VICLab/AdaCode), with supporting components from [BasicSR](https://github.com/XPixelGroup/BasicSR) and [CompressAI](https://github.com/InterDigitalInc/CompressAI). We thank their authors for making these resources available.
 
