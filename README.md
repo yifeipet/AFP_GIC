@@ -1,4 +1,4 @@
-<h1 align="center">Adaptive Fused Prior Transfer for Controllable Generative Image Compression</h1>
+# 🚀 AFP-GIC: Controllable Generative Image Compression
 
 <p align="center">
   <a href="https://ieeexplore.ieee.org/document/11712133"><img src="https://img.shields.io/badge/IEEE_Access-Paper-00629B?style=flat-square" alt="IEEE Access paper"></a>
@@ -9,7 +9,7 @@
 
 **AFP-GIC** is designed to make generative image compression **content-adaptive** and **reduce hallucinations: invented details that do not match the original image**. It adapts the visual knowledge transferred from a pretrained model to each image, guiding compression and reconstruction toward **more realistic textures and better preservation of the original content**, even at very low bitrates.
 
-Published in ***IEEE Access* (2026)**, AFP-GIC combines this content-adaptive design with **five bitrate operating points in a single deployable checkpoint**, without transmitting the fused prior or reloading model weights between operating points. System-level benchmarks on an NVIDIA RTX 4090 demonstrate **18.1% lower decoder latency** and **31.1M fewer inference parameters** than DC-VIC. Explore the released code and checkpoint, or upload your own images to experience compression and reconstruction in the live demo below.
+Our paper, [*Adaptive Fused Prior Transfer for Controllable Generative Image Compression*](https://ieeexplore.ieee.org/document/11712133), published in **IEEE Access (2026)**, presents this content-adaptive design with **five bitrate operating points in a single deployable checkpoint**, without transmitting the fused prior or reloading model weights between operating points. System-level benchmarks on an NVIDIA RTX 4090 demonstrate **18.1% lower decoder latency** and **31.1M fewer inference parameters** than DC-VIC. Explore the released code and checkpoint, or upload your own images to experience compression and reconstruction in the live demo below.
 
 ## [🤗 Live Interactive Demo on Hugging Face](https://huggingface.co/spaces/yifeipet/AFP-GIC)
 
