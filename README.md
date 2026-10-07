@@ -1,5 +1,7 @@
 # 🚀 AFP-GIC: Controllable Generative Image Compression
 
+![Good news!](https://img.shields.io/badge/Good_news!-D35400?style=flat-square) **AFP-GIC pretrained weights are now available on [Hugging Face](https://huggingface.co/yifeipet/AFP-GIC).** Download the model and use our inference code to compress and decompress your own images. [See the code example below.](#hugging-face-model-compress-your-own-images)
+
 <p align="center">
   <a href="https://ieeexplore.ieee.org/document/11712133"><img src="https://img.shields.io/badge/IEEE_Access-Paper-00629B?style=flat-square" alt="IEEE Access paper"></a>
   <a href="https://arxiv.org/abs/2605.16817"><img src="https://img.shields.io/badge/arXiv-2605.16817-B31B1B?style=flat-square" alt="arXiv and supplementary material"></a>
@@ -94,6 +96,69 @@ checkpoint/afp_gic_release/model/afp_gic_release.pth.tar
 ```
 
 The checkpoint already includes the frozen prior component; no separate AdaCode weight download is required.
+
+## Hugging Face Model: Compress Your Own Images
+
+After completing [Installation](#-installation), run the following from the repository root. The Hugging Face Hub provides the pretrained weights; the AFP-GIC code performs compression and decompression.
+
+```bash
+python -m pip install huggingface_hub
+```
+
+```python
+from pathlib import Path
+import struct
+import sys
+
+import torch
+from huggingface_hub import hf_hub_download
+
+runtime = Path("public_release/runtime").resolve()
+sys.path.insert(0, str(runtime))
+import eval_public_release as afp
+
+device = "cuda:0" if torch.cuda.is_available() else "cpu"
+weights = hf_hub_download(
+    repo_id="yifeipet/AFP-GIC",
+    filename="afp_gic_release.pth.tar",
+)
+config = afp.load_infer_config(
+    str(runtime / "config/afp_gic_release.yaml"), device
+)
+model = afp.build_comp_model(config).to(device)
+model.load_learned_weight(ckpt_path=weights)
+model.codec_setup()
+model.eval()
+
+# Encode your image at operating point 0 (choose 0 through 4).
+with torch.no_grad():
+    image = afp.read_real_tensor("input.png")
+    parts = model.compress(image, quality_ind=0)["string_list"]
+Path("compressed.afp").write_bytes(
+    b"".join(struct.pack("<I", len(part)) + part for part in parts)
+)
+
+# Decode the saved file. The original image is not needed here.
+data = Path("compressed.afp").read_bytes()
+parts, offset = [], 0
+for _ in range(3):
+    if offset + 4 > len(data):
+        raise ValueError("Truncated bitstream")
+    size = struct.unpack_from("<I", data, offset)[0]
+    offset += 4
+    if size == 0 or offset + size > len(data):
+        raise ValueError("Invalid payload length")
+    parts.append(data[offset:offset + size])
+    offset += size
+if offset != len(data):
+    raise ValueError("Unexpected trailing data")
+with torch.no_grad():
+    reconstruction, _, _ = model.decompress(parts)
+afp.img_utils.imwrite("reconstruction.png", reconstruction)
+```
+
+Replace `input.png` with your image path. Outputs are `compressed.afp` and `reconstruction.png`. Encoding and decoding can run separately after the same model setup; decoding needs the bitstream and compatible weights, not the original image. This example reads files you created yourself, not untrusted uploads. Images are reconstructed lossily, and large inputs require more memory.
+
 
 ## 🧪 Evaluation
 
