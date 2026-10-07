@@ -1,6 +1,6 @@
 # 🚀 AFP-GIC: Controllable Generative Image Compression
 
-![Good news!](https://img.shields.io/badge/Good_news!-D35400?style=flat-square) **AFP-GIC pretrained weights are now available on [Hugging Face](https://huggingface.co/yifeipet/AFP-GIC).** Download the model and use our inference code to compress and decompress your own images. [See the code example below.](#hugging-face-model-compress-your-own-images)
+✨ <img src="figs/good_news.svg" width="94" height="22" alt="Good news!"> **AFP-GIC pretrained weights are now available on [Hugging Face](https://huggingface.co/yifeipet/AFP-GIC).** Download the model and use our inference code to compress and decompress your own images. [See the code example below.](#hugging-face-model-compress-your-own-images)
 
 <p align="center">
   <a href="https://ieeexplore.ieee.org/document/11712133"><img src="https://img.shields.io/badge/IEEE_Access-Paper-00629B?style=flat-square" alt="IEEE Access paper"></a>
@@ -97,7 +97,9 @@ checkpoint/afp_gic_release/model/afp_gic_release.pth.tar
 
 The checkpoint already includes the frozen prior component; no separate AdaCode weight download is required.
 
-## Hugging Face Model: Compress Your Own Images
+<a name="hugging-face-model-compress-your-own-images"></a>
+
+## 🧠 Hugging Face Model: Compress Your Own Images
 
 After completing [Installation](#-installation), run the following from the repository root. The Hugging Face Hub provides the pretrained weights; the AFP-GIC code performs compression and decompression.
 
