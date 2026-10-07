@@ -5,6 +5,7 @@
   <a href="https://arxiv.org/abs/2605.16817"><img src="https://img.shields.io/badge/arXiv-2605.16817-B31B1B?style=flat-square" alt="arXiv and supplementary material"></a>
   <a href="https://huggingface.co/spaces/yifeipet/AFP-GIC"><img src="https://img.shields.io/badge/Hugging_Face-Live_Demo-FFD21E?style=flat-square" alt="Hugging Face live demo"></a>
   <a href="https://drive.google.com/drive/folders/1qqPyKHtdiIVoiYWl3mZNGnJFXGzhRHTR?usp=drive_link"><img src="https://img.shields.io/badge/Download-Checkpoint-238636?style=flat-square" alt="Download pretrained checkpoint"></a>
+  <a href="https://doi.org/10.24433/CO.1853201.v1"><img src="https://img.shields.io/badge/Code_Ocean-Reproducible_Capsule-147AAB?style=flat-square" alt="Code Ocean reproducible capsule"></a>
 </p>
 
 **AFP-GIC** is designed to make generative image compression **content-adaptive** and **reduce hallucinations: invented details that do not match the original image**. It adapts the visual knowledge transferred from a pretrained model to each image, guiding compression and reconstruction toward **more realistic textures and better preservation of the original content**, even at very low bitrates.
@@ -63,6 +64,10 @@ The [metrics directory](metrics/) provides CSV results for all five AFP-GIC oper
 ## 📥 Reconstructed Images and Metrics
 
 To make research comparisons easier, we provide **all 2,760 reconstructed images, per-image metrics, and dataset-average metrics** in our [GitHub Releases](https://github.com/yifeipet/AFP_GIC/releases), covering 24 Kodak, 428 CLIC2020, and 100 DIV2K images at five bitrate operating points. Download the datasets and operating points you need to include AFP-GIC as a baseline under matched evaluation protocols, **without rerunning the pretrained model**.
+
+## <a href="https://doi.org/10.24433/CO.1853201.v1"><img src="figs/code_ocean_logo.png" height="28" alt="Code Ocean"></a> Reproducible Capsule
+
+Run the Kodak evaluation on [Code Ocean](https://doi.org/10.24433/CO.1853201.v1) with the pretrained model, input images, and configured environment. The published capsule evaluates all 24 Kodak images at five operating points and provides reconstructed images, metrics, and comparisons with the paper's reference values.
 
 ## 🛠️ Installation
 
