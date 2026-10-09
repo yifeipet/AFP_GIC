@@ -1,0 +1,11 @@
+# Paths are relative to this training directory, or may be absolute.
+openimage_root: datasets/openimage
+kodak_root: datasets/kodak
+adacode_checkpoint: pretrained/AdaCode_S2_model_g.pth
+output_root: outputs
+subsets: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+batch_size: 6
+num_workers: 8
+selection_batch_size: 8
+selection_images: 2000
+selection_seed: 0
