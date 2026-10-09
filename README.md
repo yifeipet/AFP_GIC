@@ -2,7 +2,7 @@
 
 ✨ <img src="figs/good_news.svg" width="94" height="22" alt="Good news!"> **AFP-GIC pretrained weights are now available on [Hugging Face](https://huggingface.co/yifeipet/AFP-GIC).** Download the model and use our inference code to compress and decompress your own images. [See the code example below.](#hugging-face-model-compress-your-own-images)
 
-**Training code released:** the [three-stage training pipeline](#training) is now available, with stage-by-stage commands.
+🛠️ <img src="figs/training_released.svg" width="182" height="22" alt="Training code released!"> The [three-stage training pipeline](#training) is now available, with stage-by-stage commands.
 
 <p align="center">
   <a href="https://ieeexplore.ieee.org/document/11712133"><img src="https://img.shields.io/badge/IEEE_Access-Paper-00629B?style=flat-square" alt="IEEE Access paper"></a>
