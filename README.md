@@ -2,6 +2,8 @@
 
 ✨ <img src="figs/good_news.svg" width="94" height="22" alt="Good news!"> **AFP-GIC pretrained weights are now available on [Hugging Face](https://huggingface.co/yifeipet/AFP-GIC).** Download the model and use our inference code to compress and decompress your own images. [See the code example below.](#hugging-face-model-compress-your-own-images)
 
+**Training code released:** the [three-stage training pipeline](#training) is now available, with stage-by-stage commands.
+
 <p align="center">
   <a href="https://ieeexplore.ieee.org/document/11712133"><img src="https://img.shields.io/badge/IEEE_Access-Paper-00629B?style=flat-square" alt="IEEE Access paper"></a>
   <a href="https://arxiv.org/abs/2605.16817"><img src="https://img.shields.io/badge/arXiv-2605.16817-B31B1B?style=flat-square" alt="arXiv and supplementary material"></a>
@@ -67,13 +69,13 @@ The [metrics directory](metrics/) provides CSV results for all five AFP-GIC oper
 
 To make research comparisons easier, we provide **all 2,760 reconstructed images, per-image metrics, and dataset-average metrics** in our [GitHub Releases](https://github.com/yifeipet/AFP_GIC/releases), covering 24 Kodak, 428 CLIC2020, and 100 DIV2K images at five bitrate operating points. Download the datasets and operating points you need to include AFP-GIC as a baseline under matched evaluation protocols, **without rerunning the pretrained model**.
 
-## <a href="https://doi.org/10.24433/CO.1853201.v1"><img src="figs/code_ocean_logo.png" height="28" alt="Code Ocean"></a> Reproducible Capsule
+## <a href="https://doi.org/10.24433/CO.1853201.v1"><img src="figs/code_ocean_logo.png" width="55" height="28" alt="Code Ocean"></a> Reproducible Capsule
 
 Run the Kodak evaluation on [Code Ocean](https://doi.org/10.24433/CO.1853201.v1) with the pretrained model, input images, and configured environment. The published capsule evaluates all 24 Kodak images at five operating points and provides reconstructed images, metrics, and comparisons with the paper's reference values.
 
 ## 🛠️ Installation
 
-This repository provides the **Core Inference and Deployment Release**, including pretrained model inference, evaluation tools, and an interactive demo. Training infrastructure is maintained separately.
+This repository provides pretrained model inference, evaluation tools, an interactive demo, and the **three-stage training pipeline**. The instructions below set up inference and evaluation; see [Training](#training) for the separate training environment.
 
 The release was tested with **Python 3.9**, **PyTorch 2.1.0**, and **torchvision 0.16.0**. Create a separate environment and install the pinned dependencies:
 
@@ -230,6 +232,32 @@ results/kodak_demo/
 
 Run `python public_release/test.py --help` for the available options. Metric libraries may download their pretrained weights on first use.
 
+<a name="training"></a>
+
+## 🏋️ Training
+
+The [training implementation](training/) provides **three stages and seven steps**, from initial training to a model fine-tuned on five selected control pairs.
+
+| Stage | Steps | Purpose |
+| :--- | :--- | :--- |
+| I | 1–3 | High-rate warmup, dual-control rate-distortion training, and adversarial training; 500K iterations per step |
+| II | 1–3 | Prepare validation crops, search control settings, and select five control pairs; no gradient updates |
+| III | 1 | Fine-tune on the five selected pairs for 500K iterations |
+
+**Start with the [training guide](TRAINING.md)** for environment setup, dataset preparation, and commands for all seven steps. Training uses a separate environment from inference.
+
+1. Install the dependencies in [`training/requirements.txt`](training/requirements.txt).
+2. Prepare the datasets and download [`AdaCode_S2_model_g.pth`](https://github.com/yifeipet/AFP_GIC/releases/tag/adacode-s2-v1).
+3. Set the local paths in [`training/settings.yaml`](training/settings.yaml), then run the stages in order.
+
+From the repository root, preview the first-stage command before starting training:
+
+```bash
+python training/run.py stage1-step1 --device cuda:0 --dry-run
+```
+
+Prior cosine loss is disabled from the start in all supplied training configurations; prior-consistency MSE remains enabled. AdaCode weights retain their [upstream license and attribution](training/THIRD_PARTY_NOTICES.md).
+
 ## 📝 Citation
 
 If you find our work useful in your research, please cite our official [IEEE Access paper](https://ieeexplore.ieee.org/document/11712133):
@@ -247,7 +275,7 @@ If you find our work useful in your research, please cite our official [IEEE Acc
 
 ## 🤝 Acknowledgments and License
 
-AFP-GIC builds on [DC-VIC](https://github.com/iwa-shi/DC_VIC) and [AdaCode](https://github.com/KAIST-VICLab/AdaCode), with supporting components from [BasicSR](https://github.com/XPixelGroup/BasicSR) and [CompressAI](https://github.com/InterDigitalInc/CompressAI). We thank their authors for making these resources available.
+AFP-GIC builds on [DC-VIC](https://github.com/iwa-shi/DC_VIC) and [AdaCode](https://github.com/kechunl/AdaCode), with supporting components from [BasicSR](https://github.com/XPixelGroup/BasicSR) and [CompressAI](https://github.com/InterDigitalInc/CompressAI). We thank their authors for making these resources available.
 
 Original AFP-GIC additions are provided for research and evaluation use. Third-party components retain their respective licenses; no single permissive license applies uniformly to this repository. Please consult [LICENSE](LICENSE) and [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) before reuse or redistribution.
 
