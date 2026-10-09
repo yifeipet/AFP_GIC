@@ -1,0 +1,202 @@
+project_name: afp_gic
+ckpt_root: outputs/checkpoint
+debug_dir: outputs/debug
+wandb_root: outputs
+start_iter: 0
+total_iter: 500000
+eval_step: 10000
+log_step: 100
+time_step: 1000
+wandb_loss_step: 10000
+save_step: 5000
+keep_step:
+- 480000
+- 490000
+- 500000
+keep_training_state: true
+keep_discriminator: false
+optim:
+  clip_max_norm: 1.0
+  g_optimizer:
+    type: Adam
+    lr: 0.0001
+  g_scheduler:
+    type: LinearWarmupScheduler
+    warmup_iters: 50000
+    warmup_factor: 0.1
+  aux_optimizer:
+    type: Adam
+    lr: 0.001
+dataset:
+  batch_size: 6
+  train_dataset:
+    name: openimage
+    type: ImageDataset
+    image_size: 256
+    resize_range: null
+    root_dir: datasets/openimage
+    subset_list:
+    - 0
+    - 1
+    - 2
+    - 3
+    - 4
+    - 5
+    - 6
+    - 7
+    - 8
+    - 9
+  eval_dataset:
+    name: Kodak
+    type: ImageDataset
+    root_dir: datasets/kodak
+model:
+  type: HyperpriorCharmVicModel
+  enc_vq_input: onehot_indices
+  prior_type: adacode
+  use_oracle_prior: false
+subnet:
+  _delete_: true
+  encoder:
+    type: ElicVqCatScEncoder
+    in_ch: 3
+    out_ch: 192
+    main_ch: 192
+    proj_init: false
+    block_mid_ch: 96
+    input_feat_ch: 260
+  decoder:
+    type: ElicFeatFusionDecoder
+    in_ch: 192
+    block_mid_ch: 96
+    out_ch: 3
+    main_ch: 192
+    use_tanh: false
+    feat_layer_name: block1
+    fusion_layer_dict:
+      block1: block_1_8
+      block2: block_1_4
+      block3: block_1_2
+  hyperencoder:
+    type: Minnen20HyperEncoder
+    bottleneck_y: 192
+    bottleneck_z: 192
+  hyperdecoder:
+    type: Minnen20HyperDecoder
+    bottleneck_z: 192
+    hyper_out_ch: 256
+  context_model:
+    type: Minnen20CharmContextModel
+    num_slices: 6
+    bottleneck_y: 192
+    hyper_out_ch: 256
+    max_support_slices: 4
+  entropy_model_z:
+    type: SteEntropyBottleneck
+    channels: 192
+  entropy_model_y:
+    type: SteGaussianMeanScaleConditional
+    scale_bound: 0.11
+  fusion_module:
+    fuse_type: sft
+    fuse_scedule_dict:
+      block_1_8:
+        dec_ch: 512
+        cond_ch: 192
+        mid_ch: 512
+      block_1_4:
+        dec_ch: 256
+        cond_ch: 192
+        mid_ch: 256
+      block_1_2:
+        dec_ch: 256
+        cond_ch: 192
+        mid_ch: 256
+  vq_estimator:
+    type: DualBlockSwinVqEstimator
+    input_resolution:
+    - 32
+    - 32
+    in_ch: 192
+    main_ch: 128
+    n_embed: 256
+    embed_dim: 4
+    num_swin_blocks: 3
+    blk_depth: 3
+    use_upsample: false
+  vq_model:
+    ckpt_path: null
+    embed_dim: 4
+    n_embed: 256
+    monitor: val/rec_loss
+    ddconfig:
+      double_z: false
+      z_channels: 4
+      resolution: 256
+      in_channels: 3
+      out_ch: 3
+      ch: 128
+      ch_mult:
+      - 1
+      - 2
+      - 2
+      - 4
+      num_res_blocks: 2
+      attn_resolutions:
+      - 32
+      dropout: 0.0
+    lossconfig:
+      target: torch.nn.Identity
+  adacode_prior:
+    ckpt_path: pretrained/AdaCode_S2_model_g.pth
+    gt_resolution: 256
+    weight_softmax: false
+    freeze_pretrained: true
+    strict_load: false
+    cond_ch: 192
+    cond_keys:
+    - block_1_8
+    - block_1_4
+    - block_1_2
+    fuse_type: sft
+  adacode_prior_estimator:
+    type: AdaCodePriorEstimator
+    in_ch: 192
+    hidden_ch: 384
+    out_ch: 256
+    num_res_blocks: 8
+    act_type: silu
+    norm_type: gn
+    use_output_skip: true
+trainer:
+  type: RateDistortionVqCodeTrainer
+loss:
+  rate_loss:
+    type: RateLoss
+    loss_weight: 0.04
+  distortion_loss:
+    type: MSELoss
+    loss_weight: 50
+    normalize_img: true
+    mse_scale: '0_1'
+  perceptual_loss:
+    type: LPIPSLoss
+    net: alex
+    loss_weight: 1.0
+  code_distortion_loss:
+    type: VanillaMSELoss
+    loss_weight: 0.1
+  code_ce_loss:
+    type: FocalCrossEntropyLoss
+    gamma: 2.0
+    loss_weight: 0.05
+  enable_group_ce: false
+  group_map_path: null
+  group_k: 4
+  lambda_group_ce: 0.05
+  prior_mse_loss:
+    type: VanillaMSELoss
+    loss_weight: 0.1
+  prior_cosine_loss:
+    enabled: false
+    loss_weight: 0.0

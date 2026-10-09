@@ -1,0 +1,23 @@
+Repository License Notice
+=========================
+
+This repository contains original AFP-GIC code together with code that
+builds on, modifies, or redistributes components from third-party
+projects. As a result, no single permissive license applies uniformly
+to every file in this repository.
+
+For the public evaluation release:
+
+- original AFP-GIC additions are provided for research and evaluation use;
+- third-party and derived components remain subject to their respective
+  upstream licenses and notices;
+- users are responsible for complying with the applicable terms of any
+  bundled, derived, or externally installed dependency.
+
+Please read [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) before
+reusing or redistributing code from this repository. Where an upstream
+project ships its own license text, that upstream license continues to
+govern the corresponding material.
+
+This repository is distributed on an "as is" basis, without warranty of
+any kind, express or implied.

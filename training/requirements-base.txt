@@ -1,0 +1,31 @@
+# Tested with Python 3.9.
+# For the closest reproduction of the paper numbers, use the same major stack as
+# the original `dc_vic` environment:
+#   torch==2.1.0, torchvision==0.16.0, compressai==1.2.4, timm==0.9.2
+#
+# Install a matching PyTorch build for your platform/GPU first if needed, e.g.
+# from the official PyTorch index, then install the remaining packages here.
+
+torch==2.1.0
+torchvision==0.16.0
+
+numpy==1.23.5
+pandas==1.5.3
+Pillow==11.2.1
+tqdm>=4.64
+
+PyYAML>=6.0
+addict==2.4.0
+python-log-indenter==0.9
+
+opencv-python==4.5.5.64
+scikit-image==0.20.0
+
+compressai==1.2.4
+timm==0.9.2
+einops==0.3.0
+
+lpips==0.1.4
+pytorch-msssim==1.0.0
+DISTS-pytorch==0.1
+pytorch-fid==0.3.0
