@@ -1,4 +1,4 @@
-name: AFP-GIC Code Checks
+name: AFP-GIC Automatic Code Checks
 
 on:
   push:
