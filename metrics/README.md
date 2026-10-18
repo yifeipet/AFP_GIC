@@ -39,6 +39,15 @@ use `(dataset, image_name, quality_index)` to identify a record.
 FID is not a per-image metric. Kodak FID is blank because it is not reported
 in the paper. No blank entry should be interpreted as zero.
 
+FID is computed using `pytorch-fid` with its FID-specific Inception-v3
+weights and 2048-dimensional final pooling features, not VGG or AlexNet.
+Following the HiFiC patch protocol, both reference and reconstructed images
+are split into 256 x 256 patches on a non-overlapping grid and a second grid
+offset by 128 pixels in both directions. Only complete patches are retained.
+FID compares the resulting reference and reconstruction feature distributions
+at each dataset/operating point; it is not an average of per-image FID scores.
+See [`FIDMetric` in the evaluation code](../public_release/runtime/calc_metrics.py).
+
 ## Evaluation records and verification
 
 Per-image PSNR, SSIM, and SNR come from the saved RGB reconstruction evaluation.
