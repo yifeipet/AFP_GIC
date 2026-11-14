@@ -12,6 +12,12 @@
   <a href="https://doi.org/10.24433/CO.1853201.v1"><img src="https://img.shields.io/badge/Code_Ocean-Reproducible_Capsule-147AAB?style=flat-square" alt="Code Ocean reproducible capsule"></a>
 </p>
 
+<p align="center">
+  <a href="https://paperswithcode.co/api/v1/papers/2605.16817/leaderboard-badge-link?eval=35169"><img src="https://paperswithcode.co/api/v1/papers/2605.16817/leaderboard-badge.svg?eval=35169&amp;live=1" alt="Papers with Code: SOTA on CLIC2020 Test (BD vs MS-ILLM)"></a>
+  <a href="https://paperswithcode.co/api/v1/papers/2605.16817/leaderboard-badge-link?eval=35202"><img src="https://paperswithcode.co/api/v1/papers/2605.16817/leaderboard-badge.svg?eval=35202&amp;live=1" alt="Papers with Code: SOTA on DIV2K Val (BD vs MS-ILLM)"></a>
+  <a href="https://paperswithcode.co/api/v1/papers/2605.16817/leaderboard-badge-link?eval=35132"><img src="https://paperswithcode.co/api/v1/papers/2605.16817/leaderboard-badge.svg?eval=35132&amp;live=1" alt="Papers with Code: SOTA on Kodak (BD vs MS-ILLM)"></a>
+</p>
+
 **AFP-GIC** is designed to make generative image compression **content-adaptive** and **reduce hallucinations: invented details that do not match the original image**. It adapts the visual knowledge transferred from a pretrained model to each image, guiding compression and reconstruction toward **more realistic textures and better preservation of the original content**, even at very low bitrates.
 
 Our paper, [*Adaptive Fused Prior Transfer for Controllable Generative Image Compression*](https://ieeexplore.ieee.org/document/11712133), published in **IEEE Access (2026)**, presents this content-adaptive design with **five bitrate operating points in a single deployable pretrained model**, without transmitting the fused prior or reloading model weights between operating points. System-level benchmarks on an NVIDIA RTX 4090 demonstrate **18.1% lower decoder latency** and **31.1M fewer inference parameters** than DC-VIC. Explore the released code and checkpoint, or upload your own images to experience compression and reconstruction in the live demo below.
