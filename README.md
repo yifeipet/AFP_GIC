@@ -283,6 +283,8 @@ If you find our work useful in your research, please cite our official [IEEE Acc
 
 AFP-GIC builds on [DC-VIC](https://github.com/iwa-shi/DC_VIC) and [AdaCode](https://github.com/kechunl/AdaCode), with supporting components from [BasicSR](https://github.com/XPixelGroup/BasicSR) and [CompressAI](https://github.com/InterDigitalInc/CompressAI). We thank their authors for making these resources available.
 
+We thank [Hugging Face](https://huggingface.co/) and [Papers with Code](https://paperswithcode.co/) for hosting our open-source resources and making our work and benchmark results more accessible to the research community.
+
 Original AFP-GIC additions are provided for research and evaluation use. Third-party components retain their respective licenses; no single permissive license applies uniformly to this repository. Please consult [LICENSE](LICENSE) and [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) before reuse or redistribution.
 
 For questions about this release, please open a [GitHub issue](https://github.com/yifeipet/AFP_GIC/issues).
